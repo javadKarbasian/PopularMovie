@@ -50,20 +50,4 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public class MovieFragment extends Fragment {
-
-        public MovieFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            ImageAdapter imageAdapter = new ImageAdapter(getActivity());
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            GridView gridview = (GridView) findViewById(R.id.gridview_main);
-            gridview.setAdapter(imageAdapter);
-            return rootView;
-        }
-    }
 }
