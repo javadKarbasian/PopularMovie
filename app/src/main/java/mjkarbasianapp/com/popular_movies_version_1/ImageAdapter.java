@@ -57,5 +57,31 @@ public class ImageAdapter extends BaseAdapter {
             R.drawable.pic3, R.drawable.pic4,
             R.drawable.pic5,R.drawable.pic6
     };
-
+    //video Names
+    private String[] mNames = {
+      "Star Wars","Scream",
+      "the Silence of The Lambs","Snow White",
+      "Pirates of the Caribbean","Finding The Nemo"
+    };
+    //Video Year
+    private String[] mYear = {
+      "2010","2008","2002","2000","2015","2011"
+    };
+    //Video Time
+    private String[] mTime = {
+       "120min","280min","150min","180min","110min","200min"
+    };
+    //ratings
+    private String[] mRates = {
+        "6.5/10","8/10","5/10","7/10","9/10","8.5/10"
+    };
+    //movie overview
+    private String[] mOverview = {
+        "Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers.",
+        "What starts as a YouTube video going viral, soon leads to problems for the teenagers of Lakewood and serves as the catalyst for a murder that opens up a window to the town's troubled past. Everyone has secrets. Everyone tells lies. Everyone is fair game.",
+        "FBI trainee Clarice Starling ventures into a maximum-security asylum to pick the diseased brain of Hannibal Lecter, a psychiatrist turned homicidal cannibal. Starling needs clues to help her capture a serial killer. ",
+        "After the Evil Queen marries the King, she performs a violent coup in which the King is murdered and his daughter, Snow White, is taken captive. Almost a decade later, a grown Snow White is still in the clutches of the Queen. In order to obtain immortality, The Evil Queen needs the heart of Snow White. After Snow escapes the castle, the Queen sends the Huntsman to find her in the Dark Forest. ",
+        "Captain Jack Sparrow crosses paths with a woman from his past, and he's not sure if it's love -- or if she's a ruthless con artist who's using him to find the fabled Fountain of Youth",
+        "A tale which follows the comedic and eventful journeys of two fish, the fretful Marlin and his young son Nemo, who are separated from each other in the Great Barrier Reef when Nemo is unexpectedly taken from his home and thrust into a fish tank in a dentist's office overlooking Sydney Harbor."
+    };
 }
