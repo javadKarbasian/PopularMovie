@@ -84,4 +84,9 @@ public class ImageAdapter extends BaseAdapter {
         "Captain Jack Sparrow crosses paths with a woman from his past, and he's not sure if it's love -- or if she's a ruthless con artist who's using him to find the fabled Fountain of Youth",
         "A tale which follows the comedic and eventful journeys of two fish, the fretful Marlin and his young son Nemo, who are separated from each other in the Great Barrier Reef when Nemo is unexpectedly taken from his home and thrust into a fish tank in a dentist's office overlooking Sydney Harbor."
     };
+    private Integer[] mTrailers ={
+            R.raw.TrailerStarWar,R.raw.TrailerScream,
+            R.raw.Trailer1SilenceB,R.raw.TrailerSnowwhite,
+            R.raw.TrailerCaribbean,R.raw.TrailerNemo
+    };
 }
