@@ -1,14 +1,86 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="mjkarbasianapp.com.popular_movies_version_1.DetailActivity$PlaceholderFragment">
+<LinearLayout
+    android:id="@+id/movie_detail_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/movie_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Star Wars"
+        android:textSize="46sp"
 
-    <ImageView
-        android:id="@+id/movie_detail_image"
+        />
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center">
+        <ImageView
+            android:id="@+id/movie_detail_image"
+            android:layout_width="150dp"
+            android:layout_height="300dp"
+            android:src="@drawable/pic1"
+            android:layout_weight="1"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp">
+        <TextView
+            android:id="@+id/movie_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2015"
+            android:textAppearance="?android:textAppearanceMedium"
+            />
+        <TextView
+            android:id="@+id/movie_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="120min"
+            android:textAppearance="?android:textAppearanceSmall"
 
-</RelativeLayout>
+            />
+        <TextView
+            android:id="@+id/move_ratings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6/10"
+            android:textAppearance="?android:textAppearanceSmall"
+            />
+
+            <RatingBar
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingBar"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+<TextView
+    android:id="@+id/movie_description"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="there is some description about film and some of them are too long and we must see how they viewed in the view"
+    />
+<VideoView
+    android:id="@+id/movie_trailer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true" />
+
+</LinearLayout>
+
+</FrameLayout>
