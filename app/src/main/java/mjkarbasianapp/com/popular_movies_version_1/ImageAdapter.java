@@ -1,7 +1,7 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -24,8 +24,16 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return mThumbIds[position];
+    public Bundle getItem(int position) {
+        Bundle mBundle = new Bundle();
+        mBundle.putInt("movieImage",mThumbIds[position]);
+        mBundle.putString("movieName",mNames[position]);
+        mBundle.putString("movieYear",mYear[position]);
+        mBundle.putString("movieDuration",mDuration[position]);
+        mBundle.putString("movieRate",mRates[position]);
+        mBundle.putString("movieOverview",mOverview[position]);
+        mBundle.putInt("movieTrailer",mTrailers[position]);
+        return mBundle;
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ImageAdapter extends BaseAdapter {
       "2010","2008","2002","2000","2015","2011"
     };
     //Video Time
-    private String[] mTime = {
+    private String[] mDuration = {
        "120min","280min","150min","180min","110min","200min"
     };
     //ratings
@@ -85,8 +93,8 @@ public class ImageAdapter extends BaseAdapter {
         "A tale which follows the comedic and eventful journeys of two fish, the fretful Marlin and his young son Nemo, who are separated from each other in the Great Barrier Reef when Nemo is unexpectedly taken from his home and thrust into a fish tank in a dentist's office overlooking Sydney Harbor."
     };
     private Integer[] mTrailers ={
-            R.raw.TrailerStarWar,R.raw.TrailerScream,
-            R.raw.Trailer1SilenceB,R.raw.TrailerSnowwhite,
-            R.raw.TrailerCaribbean,R.raw.TrailerNemo
+            R.raw.trailer_starwars,R.raw.trailer_scream,
+            R.raw.trailer1_ilence,R.raw.trailer_snowwhite,
+            R.raw.trailer_caribbean,R.raw.trailer_nemo
     };
 }
