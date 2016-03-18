@@ -171,7 +171,7 @@ public  class MovieFragment extends Fragment {
             }
 
             try {
-                return getMovieDataFromJson(movieJsonStr, pageNum);
+                return getMovieDataFromJson(movieJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -181,7 +181,7 @@ public  class MovieFragment extends Fragment {
             return null;
         }
 
-        private String[] getMovieDataFromJson(String movieJsonStr, int numVideos)  throws JSONException {
+        private String[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
             return null;
         }
