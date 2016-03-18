@@ -57,7 +57,7 @@ public  class MovieFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
             FetchMovieTask movieTask = new FetchMovieTask();
-            movieTask.execute("popular");
+            movieTask.execute("popular","2");
             return true;
         }
 
@@ -91,6 +91,7 @@ public  class MovieFragment extends Fragment {
 
         @Override
         protected String[] doInBackground(String... params) {
+            //if there is no sort mode we could not show anythings
             if (params.length == 0) {
                 return null;
             }
@@ -102,10 +103,7 @@ public  class MovieFragment extends Fragment {
 
             // Will contain the raw JSON response as a string.
             String MovieJsonStr = null;
-
-            String format = "json";
-            String units = "metric";
-            int pageNum = 1;
+            String pageNum = params[1];
 
 
             try {
@@ -119,7 +117,7 @@ public  class MovieFragment extends Fragment {
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                         .appendPath(params[0])
-                        .appendQueryParameter(PAGE_PARAM, Integer.toString(pageNum))
+                        .appendQueryParameter(PAGE_PARAM, pageNum)
                         .appendQueryParameter(LANG_PARAM, "en")
                         .appendQueryParameter(APPID_PARAM, "c4cba1cb560e5692f0a51575d4f1a145")
                         .build();
