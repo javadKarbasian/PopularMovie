@@ -21,6 +21,9 @@ android {
 repositories{
 //    mavenCentral()
 }
+//BuildTypes.each {
+//    it.buildConfigField 'String', 'THE_MOVIE_DB_API_KEY', '"c4cba1cb560e5692f0a51575d4f1a145"'
+//}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

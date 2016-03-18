@@ -103,8 +103,7 @@ public class DetailActivity extends ActionBarActivity {
             trailerView.setVideoURI(uri);
             trailerView.setMediaController(mMediaController);
             trailerView.seekTo(10000);
-            trailerView.requestFocus();
-            }
+                        }
             return rootView;
         }
 
