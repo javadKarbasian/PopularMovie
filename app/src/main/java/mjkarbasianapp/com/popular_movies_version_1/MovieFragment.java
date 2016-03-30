@@ -86,13 +86,13 @@ public  class MovieFragment extends Fragment {
     }
 
 
-    public class FetchMovieTask extends AsyncTask<String, Void, Bundle[]>{
+    public class FetchMovieTask extends AsyncTask<String, Void, Bundle>{
 
 
         private String movieJsonStr;
 
         @Override
-        protected Bundle[] doInBackground(String... params) {
+        protected Bundle doInBackground(String... params) {
             //if there is no sort mode we could not show anythings
             if (params.length == 0) {
                 return null;
@@ -184,7 +184,7 @@ public  class MovieFragment extends Fragment {
             return null;
         }
 
-        private Bundle[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+        private Bundle getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
             final String OWM_PAGE = "page";
             final String OWM_RESULTS = "results";
@@ -206,8 +206,8 @@ public  class MovieFragment extends Fragment {
             String  page = movieJson.getString(OWM_PAGE);
             String totalPages = movieJson.getString(OWM_TOTAL_PAGES);
             //extracting movie list items
-            Bundle[] bundles = new Bundle[20];
-
+            Bundle bundle = new Bundle();
+            String[] movieData;
             for(int i=0;i<movieArray.length();i++){
 
                 String title;
@@ -224,25 +224,21 @@ public  class MovieFragment extends Fragment {
                 overview = movieItem.getString(OWM_OVERVIEW);
                 posterPath = movieItem.getString(OWM_POSTER_PATH);
                 backDropPath = movieItem.getString(OWM_BACKDROP_PATH);
-                voteAverage   =movieItem.getString(OWN_VOTE_AVERAGE);
+                voteAverage = movieItem.getString(OWN_VOTE_AVERAGE);
                 releaseDate = movieItem.getString(OWM_RELEASE_DATE);
                 popularity = movieItem.getString(OWN_POPULARITY);
                 id = movieItem.getString(OWN_ID);
-                bundles[i].putString("title",title);
-                bundles[i].putString("overview",overview);
-                bundles[i].putString("posterPath",posterPath);
-                bundles[i].putString("backDropPath",backDropPath);
-                bundles[i].putString("voteAverage",voteAverage);
-                bundles[i].putString("releaseDate",releaseDate);
-                bundles[i].putString("popularity",popularity);
-                bundles[i].putString("id",id);
+                movieData = new String[]{
+                        title, overview, posterPath, backDropPath, voteAverage, releaseDate, popularity, id
+                };
+                bundle.putStringArray("movieData-"+Integer.toString(i),movieData);
             }
 
-            return bundles;
+            return bundle;
         }
 
         @Override
-        protected void onPostExecute(Bundle[] result) {
+        protected void onPostExecute(Bundle result) {
 
                 // New data is back from the server.  Hooray!
             }
