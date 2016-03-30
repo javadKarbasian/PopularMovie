@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +32,7 @@ import java.net.URL;
 public  class MovieFragment extends Fragment {
 
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
-
+    static  ImageAdapter imageAdapter = null;
 
     public MovieFragment() {
     }
@@ -67,7 +69,7 @@ public  class MovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final ImageAdapter imageAdapter = new ImageAdapter(getActivity());
+         imageAdapter = new ImageAdapter(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_main);
         gridView.setAdapter(imageAdapter);
@@ -84,13 +86,13 @@ public  class MovieFragment extends Fragment {
     }
 
 
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]>{
+    public class FetchMovieTask extends AsyncTask<String, Void, Bundle[]>{
 
 
         private String movieJsonStr;
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Bundle[] doInBackground(String... params) {
             //if there is no sort mode we could not show anythings
             if (params.length == 0) {
                 return null;
@@ -182,7 +184,7 @@ public  class MovieFragment extends Fragment {
             return null;
         }
 
-        private String[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+        private Bundle[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
             final String OWM_PAGE = "page";
             final String OWM_RESULTS = "results";
@@ -194,14 +196,53 @@ public  class MovieFragment extends Fragment {
             final String OWM_GENRE_IDS = "genre_ids";
             final String OWM_ORIGINAL_TITLE =  "original_title";
             final String OWM_BACKDROP_PATH = "backdrop_path";
-            final String POPULARITY =  "popularity";
-            final String VOTE_AVERAGE =  "vote_average";
+            final String OWN_POPULARITY =  "popularity";
+            final String OWN_VOTE_AVERAGE =  "vote_average";
+            final String OWN_ID = "id";
 
-            return null;
+            // getting main data of movie query
+            JSONObject movieJson = new JSONObject(movieJsonStr);
+            JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
+            String  page = movieJson.getString(OWM_PAGE);
+            String totalPages = movieJson.getString(OWM_TOTAL_PAGES);
+            //extracting movie list items
+            Bundle[] bundles = new Bundle[20];
+
+            for(int i=0;i<movieArray.length();i++){
+
+                String title;
+                String overview;
+                String posterPath;
+                String backDropPath;
+                String voteAverage;
+                String releaseDate;
+                String popularity;
+                String id;
+
+                JSONObject movieItem = movieArray.getJSONObject(i);
+                title = movieItem.getString(OWM_ORIGINAL_TITLE);
+                overview = movieItem.getString(OWM_OVERVIEW);
+                posterPath = movieItem.getString(OWM_POSTER_PATH);
+                backDropPath = movieItem.getString(OWM_BACKDROP_PATH);
+                voteAverage   =movieItem.getString(OWN_VOTE_AVERAGE);
+                releaseDate = movieItem.getString(OWM_RELEASE_DATE);
+                popularity = movieItem.getString(OWN_POPULARITY);
+                id = movieItem.getString(OWN_ID);
+                bundles[i].putString("title",title);
+                bundles[i].putString("overview",overview);
+                bundles[i].putString("posterPath",posterPath);
+                bundles[i].putString("backDropPath",backDropPath);
+                bundles[i].putString("voteAverage",voteAverage);
+                bundles[i].putString("releaseDate",releaseDate);
+                bundles[i].putString("popularity",popularity);
+                bundles[i].putString("id",id);
+            }
+
+            return bundles;
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(Bundle[] result) {
 
                 // New data is back from the server.  Hooray!
             }
