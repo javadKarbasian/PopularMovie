@@ -121,7 +121,7 @@ public  class MovieFragment extends Fragment {
                         .appendQueryParameter(LANG_PARAM, "en")
                         .appendQueryParameter(APPID_PARAM, "c4cba1cb560e5692f0a51575d4f1a145")
                         .build();
-
+                Log.d(LOG_TAG,builtUri.toString());
                 URL url = new URL(builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -151,6 +151,7 @@ public  class MovieFragment extends Fragment {
                     return null;
                 }
                 movieJsonStr = buffer.toString();
+                Log.d(LOG_TAG,movieJsonStr);
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Connection Error ", e);
@@ -182,6 +183,19 @@ public  class MovieFragment extends Fragment {
         }
 
         private String[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+
+            final String OWM_PAGE = "page";
+            final String OWM_RESULTS = "results";
+            final String OWM_TOTAL_RESULTS = "total_results";
+            final String OWM_TOTAL_PAGES = "total_pages";
+            final String OWM_POSTER_PATH = "poster_path";
+            final String OWM_OVERVIEW = "overview";
+            final String OWM_RELEASE_DATE = "release_date";
+            final String OWM_GENRE_IDS = "genre_ids";
+            final String OWM_ORIGINAL_TITLE =  "original_title";
+            final String OWM_BACKDROP_PATH = "backdrop_path";
+            final String POPULARITY =  "popularity";
+            final String VOTE_AVERAGE =  "vote_average";
 
             return null;
         }
