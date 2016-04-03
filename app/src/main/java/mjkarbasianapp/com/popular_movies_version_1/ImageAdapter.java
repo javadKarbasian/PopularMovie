@@ -2,41 +2,46 @@ package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
 /**
  * Created by family on 3/5/2016.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    public String[] mPosterPath;
+    public String[] mPosterPath = null;
     public String[] backDropPath;
     public String[] mPopularity;
+    private static String BASE_PIC_URI = "http://image.tmdb.org/t/p/w185/";
+    private final Object mLock = new Object();
+    private List<String> mObjects;
+    private final LayoutInflater mInflater;
 
-    public ImageAdapter(Context c) {
-        mContext = c;
+    public ImageAdapter(Context context,List<String> objects) {
+        mContext = context;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mObjects = objects;
+    }
+
+
+
+    @Override
+    public String getItem(int position) {
+       return mObjects.get(position);
     }
 
     @Override
     public int getCount() {
-        return mThumbIds.length;
-    }
-
-    @Override
-    public Bundle getItem(int position) {
-        Bundle mBundle = new Bundle();
-        mBundle.putInt("movieImage",mThumbIds[position]);
-        mBundle.putString("movieName",mNames[position]);
-        mBundle.putString("movieYear",mYear[position]);
-        mBundle.putString("movieDuration",mDuration[position]);
-        mBundle.putString("movieRate",mRates[position]);
-        mBundle.putString("movieOverview",mOverview[position]);
-        mBundle.putInt("movieTrailer",mTrailers[position]);
-        return mBundle;
+        return mObjects.size();
     }
 
     @Override
@@ -46,7 +51,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        ImageView imageView ;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
@@ -57,7 +62,10 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+            String url = BASE_PIC_URI + getItem(position);
+            Picasso.with(mContext).load(url).into(imageView);
+
+
         return imageView;
 
     }
@@ -101,4 +109,20 @@ public class ImageAdapter extends BaseAdapter {
             R.raw.trailer_caribbean,R.raw.trailer_nemo
     };
     private static String[] mID;
+
+
+    public void clear() {
+        synchronized (mLock) {
+                mObjects.clear();
+        }
+        notifyDataSetChanged();
+
+    }
+
+    public void add(String object) {
+        synchronized (mLock) {
+            mObjects.add(object);
+        }
+        notifyDataSetChanged();
+    }
 }

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -78,32 +79,31 @@ public class DetailActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-            ImageAdapter imageAdapter = new ImageAdapter(getActivity());
+            ImageAdapter imageAdapter = new ImageAdapter(getActivity(),new ArrayList<String>());
             Intent intent = getActivity().getIntent();
-            ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_image);
-            TextView nameView = (TextView)rootView.findViewById(R.id.movie_name);
-            TextView yearView = (TextView)rootView.findViewById(R.id.movie_year);
-            TextView durationView = (TextView)rootView.findViewById(R.id.movie_duration);
-            TextView rateView = (TextView)rootView.findViewById(R.id.movie_ratings);
-            TextView overviewView = (TextView)rootView.findViewById(R.id.movie_description);
-            VideoView trailerView = (VideoView)rootView.findViewById(R.id.movie_trailer);
-            mMediaController = new MediaController(getActivity());
+//            ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_image);
+//            TextView nameView = (TextView)rootView.findViewById(R.id.movie_name);
+//            TextView yearView = (TextView)rootView.findViewById(R.id.movie_year);
+//            TextView durationView = (TextView)rootView.findViewById(R.id.movie_duration);
+//            TextView rateView = (TextView)rootView.findViewById(R.id.movie_ratings);
+//            TextView overviewView = (TextView)rootView.findViewById(R.id.movie_description);
+            //VideoView trailerView = (VideoView)rootView.findViewById(R.id.movie_trailer);
+//            mMediaController = new MediaController(getActivity());
 
-            if (intent!=null && intent.hasExtra("id")){
-            int position = intent.getIntExtra("id", 0);
-            Bundle mBundle = imageAdapter.getItem(position);
-            imageView.setImageResource(mBundle.getInt("movieImage"));
-            nameView.setText(mBundle.getString("movieName"));
-            yearView.setText(mBundle.getString("movieYear"));
-            durationView.setText(mBundle.getString("movieDuration"));
-            rateView.setText(mBundle.getString("movieRate"));
-            overviewView.setText(mBundle.getString("movieOverview"));
-            Uri uri = Uri.parse("android.resource://" + getActivity().getPackageName()+"/raw/"+ mBundle.getInt("movieTrailer"));
-            Log.d(LOG_TAG, "uri parsed :" + uri);
-            trailerView.setVideoURI(uri);
-            trailerView.setMediaController(mMediaController);
-            trailerView.seekTo(10000);
-                        }
+//            if (intent!=null && intent.hasExtra("id")){
+//            int position = intent.getIntExtra("id", 0);
+//            Bundle mBundle = imageAdapter.getItem(position);
+//            imageView.setImageResource(mBundle.getInt("movieImage"));
+//            nameView.setText(mBundle.getString("movieName"));
+//            yearView.setText(mBundle.getString("movieYear"));
+//            durationView.setText(mBundle.getString("movieDuration"));
+//            rateView.setText(mBundle.getString("movieRate"));
+//            overviewView.setText(mBundle.getString("movieOverview"));
+          //  Uri uri = Uri.parse("android.resource://" + getActivity().getPackageName()+"/raw/"+ mBundle.getInt("movieTrailer"));
+          //  Log.d(LOG_TAG, "uri parsed :" + uri);
+           // trailerView.setVideoURI(uri);
+            //trailerView.setMediaController(mMediaController);
+            //trailerView.seekTo(10000);}
             return rootView;
         }
 

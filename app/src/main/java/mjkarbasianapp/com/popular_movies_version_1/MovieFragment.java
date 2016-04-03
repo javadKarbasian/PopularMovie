@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by family on 3/5/2016.
@@ -69,7 +73,7 @@ public  class MovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-         imageAdapter = new ImageAdapter(getActivity());
+        imageAdapter = new ImageAdapter(getActivity(), new ArrayList<String>());
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_main);
         gridView.setAdapter(imageAdapter);
@@ -86,13 +90,13 @@ public  class MovieFragment extends Fragment {
     }
 
 
-    public class FetchMovieTask extends AsyncTask<String, Void, Bundle>{
+    public class FetchMovieTask extends AsyncTask<String, Void, String[]>{
 
 
         private String movieJsonStr;
 
         @Override
-        protected Bundle doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             //if there is no sort mode we could not show anythings
             if (params.length == 0) {
                 return null;
@@ -111,13 +115,13 @@ public  class MovieFragment extends Fragment {
             try {
                 // Construct the URL for the http://api.themoviedb.org/3/movie/popular
 
-                final String FORECAST_BASE_URL =
+                final String MOVIE_BASE_URL =
                         "http://api.themoviedb.org/3/movie/";
                 final String PAGE_PARAM = "page";
                 final String LANG_PARAM = "language";
                 final String APPID_PARAM = "api_key";
 
-                Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
                         .appendPath(params[0])
                         .appendQueryParameter(PAGE_PARAM, pageNum)
                         .appendQueryParameter(LANG_PARAM, "en")
@@ -184,7 +188,7 @@ public  class MovieFragment extends Fragment {
             return null;
         }
 
-        private Bundle getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+        private String[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
             final String OWM_PAGE = "page";
             final String OWM_RESULTS = "results";
@@ -207,7 +211,7 @@ public  class MovieFragment extends Fragment {
             String totalPages = movieJson.getString(OWM_TOTAL_PAGES);
             //extracting movie list items
             Bundle bundle = new Bundle();
-            String[] movieData;
+            String[] movieData = new String[movieArray.length()];
             for(int i=0;i<movieArray.length();i++){
 
                 String title;
@@ -221,33 +225,36 @@ public  class MovieFragment extends Fragment {
 
                 JSONObject movieItem = movieArray.getJSONObject(i);
                 title = movieItem.getString(OWM_ORIGINAL_TITLE);
-                imageAdapter.mNames[i]=title;
+                //imageAdapter.mNames[i]=title;
                 overview = movieItem.getString(OWM_OVERVIEW);
-                imageAdapter.mOverview[i]=overview;
+                //imageAdapter.mOverview[i]=overview;
                 posterPath = movieItem.getString(OWM_POSTER_PATH);
-                imageAdapter.mPosterPath[i] = posterPath;
+                //imageAdapter.mPosterPath[i] = posterPath;
                 backDropPath = movieItem.getString(OWM_BACKDROP_PATH);
-                imageAdapter.backDropPath[i]=backDropPath;
+                //imageAdapter.backDropPath[i]=backDropPath;
                 voteAverage = movieItem.getString(OWN_VOTE_AVERAGE);
-                imageAdapter.mRates[i]=voteAverage;
+                //imageAdapter.mRates[i]=voteAverage;
                 releaseDate = movieItem.getString(OWM_RELEASE_DATE);
-                imageAdapter.mYear[i] = releaseDate;
+                //imageAdapter.mYear[i] = releaseDate;
                 popularity = movieItem.getString(OWN_POPULARITY);
-                imageAdapter.mPopularity[i] =popularity;
+                //imageAdapter.mPopularity[i] =popularity;
                 id = movieItem.getString(OWN_ID);
-                movieData = new String[]{
-                        title, overview, posterPath, backDropPath, voteAverage, releaseDate, popularity, id
-                };
-                bundle.putStringArray("movieData-"+Integer.toString(i),movieData);
+                movieData[i] = posterPath;
             }
 
-            return bundle;
+            return movieData;
         }
 
         @Override
-        protected void onPostExecute(Bundle result) {
+        protected void onPostExecute(String[] result) {
 
                 // New data is back from the server.  Hooray!
+                if(imageAdapter!=null){
+                imageAdapter.clear();
+                }
+            for(String movie : result){
+                imageAdapter.add(movie);
+            }
             }
         }
     }
