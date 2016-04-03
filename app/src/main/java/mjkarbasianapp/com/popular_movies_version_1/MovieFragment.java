@@ -221,12 +221,19 @@ public  class MovieFragment extends Fragment {
 
                 JSONObject movieItem = movieArray.getJSONObject(i);
                 title = movieItem.getString(OWM_ORIGINAL_TITLE);
+                imageAdapter.mNames[i]=title;
                 overview = movieItem.getString(OWM_OVERVIEW);
+                imageAdapter.mOverview[i]=overview;
                 posterPath = movieItem.getString(OWM_POSTER_PATH);
+                imageAdapter.mPosterPath[i] = posterPath;
                 backDropPath = movieItem.getString(OWM_BACKDROP_PATH);
+                imageAdapter.backDropPath[i]=backDropPath;
                 voteAverage = movieItem.getString(OWN_VOTE_AVERAGE);
+                imageAdapter.mRates[i]=voteAverage;
                 releaseDate = movieItem.getString(OWM_RELEASE_DATE);
+                imageAdapter.mYear[i] = releaseDate;
                 popularity = movieItem.getString(OWN_POPULARITY);
+                imageAdapter.mPopularity[i] =popularity;
                 id = movieItem.getString(OWN_ID);
                 movieData = new String[]{
                         title, overview, posterPath, backDropPath, voteAverage, releaseDate, popularity, id

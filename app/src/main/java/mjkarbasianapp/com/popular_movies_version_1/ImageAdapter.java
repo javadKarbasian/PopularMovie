@@ -13,6 +13,9 @@ import android.widget.ImageView;
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    public String[] mPosterPath;
+    public String[] backDropPath;
+    public String[] mPopularity;
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -60,31 +63,31 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     // references to our images
-    private Integer[] mThumbIds = {
+    public  Integer[] mThumbIds = {
             R.drawable.pic1, R.drawable.pic2,
             R.drawable.pic3, R.drawable.pic4,
             R.drawable.pic5,R.drawable.pic6
     };
     //video Names
-    private String[] mNames = {
+    public  String[] mNames = {
       "Star Wars","Scream",
       "the Silence of The Lambs","Snow White",
       "Pirates of the Caribbean","Finding The Nemo"
     };
     //Video Year
-    private String[] mYear = {
+    public  String[] mYear = {
       "2010","2008","2002","2000","2015","2011"
     };
     //Video Time
-    private String[] mDuration = {
+    public String[] mDuration = {
        "120min","280min","150min","180min","110min","200min"
     };
     //ratings
-    private String[] mRates = {
+    public  String[] mRates = {
         "6.5/10","8/10","5/10","7/10","9/10","8.5/10"
     };
     //movie overview
-    private String[] mOverview = {
+    public  String[] mOverview = {
         "Thirty years after defeating the Galactic Empire, Han Solo and his allies face a new threat from the evil Kylo Ren and his army of Stormtroopers.",
         "What starts as a YouTube video going viral, soon leads to problems for the teenagers of Lakewood and serves as the catalyst for a murder that opens up a window to the town's troubled past. Everyone has secrets. Everyone tells lies. Everyone is fair game.",
         "FBI trainee Clarice Starling ventures into a maximum-security asylum to pick the diseased brain of Hannibal Lecter, a psychiatrist turned homicidal cannibal. Starling needs clues to help her capture a serial killer. ",
@@ -97,4 +100,5 @@ public class ImageAdapter extends BaseAdapter {
             R.raw.trailer1_ilence,R.raw.trailer_snowwhite,
             R.raw.trailer_caribbean,R.raw.trailer_nemo
     };
+    private static String[] mID;
 }
