@@ -92,21 +92,21 @@
     />
 </LinearLayout>
 
-<LinearLayout
-        android:id="@+id/trailer_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="@drawable/list_divider"
-        android:dividerPadding="5dp"
-        >
-        <VideoView
-            android:id="@+id/movie_trailer"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:clickable="true"
-            android:layout_marginTop="20dp" />
-    </LinearLayout>
+<!--<LinearLayout-->
+        <!--android:id="@+id/trailer_list"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:divider="@drawable/list_divider"-->
+        <!--android:dividerPadding="5dp"-->
+        <!-->-->
+        <!--<VideoView-->
+            <!--android:id="@+id/movie_trailer"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:clickable="true"-->
+            <!--android:layout_marginTop="20dp" />-->
+    <!--</LinearLayout>-->
 
 </LinearLayout>
 

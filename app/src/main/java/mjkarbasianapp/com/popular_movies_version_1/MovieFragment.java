@@ -62,8 +62,7 @@ public  class MovieFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            FetchMovieTask movieTask = new FetchMovieTask();
-            movieTask.execute("popular","2");
+            updateMovie();
             return true;
         }
 
@@ -95,6 +94,16 @@ public  class MovieFragment extends Fragment {
             }
         });
         return rootView;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovie();
+    }
+
+    private void updateMovie() {
+        FetchMovieTask movieTask = new FetchMovieTask();
+        movieTask.execute("popular","1");
     }
 
 

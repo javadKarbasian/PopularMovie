@@ -7,5 +7,7 @@
         android:verticalSpacing="@dimen/grid_item_movie_spacing"
         android:horizontalSpacing="@dimen/grid_item_movie_spacing"
         android:padding="@dimen/grid_item_movie_spacing"
-        android:drawSelectorOnTop="true" />
+        android:drawSelectorOnTop="true"
+
+        />
 
