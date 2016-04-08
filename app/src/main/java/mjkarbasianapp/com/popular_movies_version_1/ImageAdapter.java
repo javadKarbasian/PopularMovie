@@ -1,15 +1,16 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -23,10 +24,12 @@ public class ImageAdapter extends BaseAdapter {
     public String[] mPopularity;
     private static String BASE_PIC_URI = "http://image.tmdb.org/t/p/w185/";
     private final Object mLock = new Object();
-    private List<String> mObjects;
+    private List<JSONObject> mObjects;
     private final LayoutInflater mInflater;
+    private String posterPath;
 
-    public ImageAdapter(Context context,List<String> objects) {
+
+    public ImageAdapter(Context context,List<JSONObject> objects) {
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mObjects = objects;
@@ -35,7 +38,7 @@ public class ImageAdapter extends BaseAdapter {
 
 
     @Override
-    public String getItem(int position) {
+    public JSONObject getItem(int position) {
        return mObjects.get(position);
     }
 
@@ -55,14 +58,21 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+//            imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            imageView.setPadding(8, 8, 8, 8);
         } else {
             imageView = (ImageView) convertView;
         }
 
-            String url = BASE_PIC_URI + getItem(position);
+
+
+        try {
+            posterPath = Utility.getMovieDataFromJson(getItem(position))[2];
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = BASE_PIC_URI + posterPath;
             Picasso.with(mContext).load(url).into(imageView);
 
 
@@ -119,7 +129,7 @@ public class ImageAdapter extends BaseAdapter {
 
     }
 
-    public void add(String object) {
+    public void add(JSONObject object) {
         synchronized (mLock) {
             mObjects.add(object);
         }

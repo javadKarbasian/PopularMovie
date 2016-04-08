@@ -71,18 +71,26 @@ public  class MovieFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        imageAdapter = new ImageAdapter(getActivity(), new ArrayList<String>());
+        imageAdapter = new ImageAdapter(getActivity(), new ArrayList<JSONObject>());
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_main);
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public String[] movieData;
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("id",position);
+                JSONObject movie = imageAdapter.getItem(position);
+                try {
+                    movieData = Utility.getMovieDataFromJson(movie);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("movieData",movieData);
                 startActivity(intent);
             }
         });
@@ -90,13 +98,13 @@ public  class MovieFragment extends Fragment {
     }
 
 
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]>{
+    public class FetchMovieTask extends AsyncTask<String, Void, JSONArray>{
 
 
         private String movieJsonStr;
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected JSONArray doInBackground(String... params) {
             //if there is no sort mode we could not show anythings
             if (params.length == 0) {
                 return null;
@@ -188,73 +196,37 @@ public  class MovieFragment extends Fragment {
             return null;
         }
 
-        private String[] getMovieDataFromJson(String movieJsonStr)  throws JSONException {
+        private JSONArray getMovieDataFromJson(String movieJsonStr)  throws JSONException {
 
-            final String OWM_PAGE = "page";
+
             final String OWM_RESULTS = "results";
-            final String OWM_TOTAL_RESULTS = "total_results";
-            final String OWM_TOTAL_PAGES = "total_pages";
-            final String OWM_POSTER_PATH = "poster_path";
-            final String OWM_OVERVIEW = "overview";
-            final String OWM_RELEASE_DATE = "release_date";
-            final String OWM_GENRE_IDS = "genre_ids";
-            final String OWM_ORIGINAL_TITLE =  "original_title";
-            final String OWM_BACKDROP_PATH = "backdrop_path";
-            final String OWN_POPULARITY =  "popularity";
-            final String OWN_VOTE_AVERAGE =  "vote_average";
-            final String OWN_ID = "id";
 
             // getting main data of movie query
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
-            String  page = movieJson.getString(OWM_PAGE);
-            String totalPages = movieJson.getString(OWM_TOTAL_PAGES);
-            //extracting movie list items
-            Bundle bundle = new Bundle();
-            String[] movieData = new String[movieArray.length()];
-            for(int i=0;i<movieArray.length();i++){
 
-                String title;
-                String overview;
-                String posterPath;
-                String backDropPath;
-                String voteAverage;
-                String releaseDate;
-                String popularity;
-                String id;
-
-                JSONObject movieItem = movieArray.getJSONObject(i);
-                title = movieItem.getString(OWM_ORIGINAL_TITLE);
-                //imageAdapter.mNames[i]=title;
-                overview = movieItem.getString(OWM_OVERVIEW);
-                //imageAdapter.mOverview[i]=overview;
-                posterPath = movieItem.getString(OWM_POSTER_PATH);
-                //imageAdapter.mPosterPath[i] = posterPath;
-                backDropPath = movieItem.getString(OWM_BACKDROP_PATH);
-                //imageAdapter.backDropPath[i]=backDropPath;
-                voteAverage = movieItem.getString(OWN_VOTE_AVERAGE);
-                //imageAdapter.mRates[i]=voteAverage;
-                releaseDate = movieItem.getString(OWM_RELEASE_DATE);
-                //imageAdapter.mYear[i] = releaseDate;
-                popularity = movieItem.getString(OWN_POPULARITY);
-                //imageAdapter.mPopularity[i] =popularity;
-                id = movieItem.getString(OWN_ID);
-                movieData[i] = posterPath;
-            }
-
-            return movieData;
+            return movieArray;
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(JSONArray result) {
 
                 // New data is back from the server.  Hooray!
                 if(imageAdapter!=null){
                 imageAdapter.clear();
                 }
-            for(String movie : result){
-                imageAdapter.add(movie);
-            }
+            JSONObject movie;
+            if(result!=null){
+                for(int i= 0 ; i<result.length();i++){
+                        try
+                        {
+                            movie = result.getJSONObject(i);
+                            imageAdapter.add(movie);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                }
+                }
             }
         }
     }
