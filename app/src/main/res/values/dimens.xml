@@ -3,5 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="grid_item_movie_width">130dp</dimen>
-    <dimen name="grid_item_movie_spacing">5dp</dimen>
+    <dimen name="grid_item_movie_spacing">0dp</dimen>
 </resources>
