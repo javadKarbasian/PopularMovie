@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
@@ -78,9 +81,11 @@ public class DetailActivity extends ActionBarActivity {
         private static final String BASE_PIC_URI = "http://image.tmdb.org/t/p/w185/";
         MediaController  mMediaController;
         private static String LOG_TAG = DetailFragment.class.getSimpleName();
+        private final static  String MOVIE_SHARE_HASHTAG =" #MovieApp";
         private String[] movieData;
 
         public DetailFragment() {
+            setHasOptionsMenu(true);
         }
 
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -116,5 +121,37 @@ public class DetailActivity extends ActionBarActivity {
             return null;
 
         }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            inflater.inflate(R.menu.detailfragment, menu);
+
+            // Retrieve the share menu item
+            MenuItem menuItem = menu.findItem(R.id.action_share);
+
+            // Get the provider and hold onto it to set/change the share intent.
+            ShareActionProvider mShareActionProvider =
+                    (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+            // Attach an intent to this ShareActionProvider.  You can update this at any time,
+            // like when the user selects a new piece of data they might like to share.
+            if (mShareActionProvider != null ) {
+                mShareActionProvider.setShareIntent(createShareMovieIntent());
+            } else {
+                Log.d(LOG_TAG, "Share Action Provider is null?");
+            }
+        }
+
+        private Intent createShareMovieIntent() {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Lets see " +'"' +movieData[0]+'"'+"\n" + "with popular Rating of " + movieData[4] + MOVIE_SHARE_HASHTAG);
+            return shareIntent;
+        }
+
+
     }
 }

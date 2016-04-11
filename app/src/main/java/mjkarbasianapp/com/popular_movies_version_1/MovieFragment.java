@@ -1,9 +1,11 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,7 +105,9 @@ public  class MovieFragment extends Fragment {
 
     private void updateMovie() {
         FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute("popular","1");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = prefs.getString(getString(R.string.pref_sort_key),"popular");
+        movieTask.execute(sortOrder,"popular");
     }
 
 
