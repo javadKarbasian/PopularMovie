@@ -1,5 +1,7 @@
 package mjkarbasianapp.com.popular_movies_version_1.Data;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,7 +9,21 @@ import android.provider.BaseColumns;
  */
 public class MovieContract {
 
+    public static final String CONTENT_AUTHORITY = "mjkarbasianapp.com.popular_movies_version_1";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://"+CONTENT_AUTHORITY);
+    public static final String PATH_MOVIE = "movie";
+    public static final String PATH_TRAILER = "trailer";
+    //List of out uri`s are : 1)content://AUTHORITY/movie 2)content://AUTHORITY/movie/id
+    // 3)content://AUTHORITY/movie/id/videos 4)content://AUTHORITY/movie/trailers
+
     public static final class MovieEntry implements BaseColumns{
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
 
     //Defining columns
     public static final String TABLE_NAME = "movie";
