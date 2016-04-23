@@ -1,6 +1,7 @@
 package mjkarbasianapp.com.popular_movies_version_1.Data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -36,13 +37,39 @@ public class MovieContract {
     public static final String COLUMN_VOTE_AVERAGE = "vote_average";
     public static final String COLUMN_SITE_ID = "site_id";
 
-}
+        //2)content://AUTHORITY/movie/id
+    public static Uri buildMovieUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI,id);}
+
+    //List of out uri`s are : 1)content://AUTHORITY/movie/popular 1.5)content://AUTHORITY/movie/top_rated 2)content://AUTHORITY/movie/id
+    // 3)content://AUTHORITY/movie/id/trailer 4)content://AUTHORITY/trailers
+    public static Uri buildPopularMovieUri(){
+    return CONTENT_URI.buildUpon().appendPath("popular").build();}
+    public static Uri buildTopMovieUri(){return CONTENT_URI.buildUpon().appendPath("top_rated").build();}
+
+    public static Uri buildMovieTrailerUri(long id){
+    return buildMovieUri(id).buildUpon().appendPath(PATH_TRAILER).build();}
+
+    }
+
+
     public static final class TrailerEntry implements BaseColumns{
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TRAILER).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TRAILER;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TRAILER;
         //Defining Columns
         public static final String TABLE_NAME = "trailer";
         public static final String COLUMN_TRAILER_KEY = "trailer_key";
         public static final String COLUMN_SITE = "site";
         public static final String COLUMN_MOV_ID = "movie_id";
+        public static Uri buildTrailerUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI,id);
+        }
     }
 
 }
