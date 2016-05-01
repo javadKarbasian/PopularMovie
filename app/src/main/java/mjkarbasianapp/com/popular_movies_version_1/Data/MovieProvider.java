@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by family on 4/23/2016.
  */
@@ -36,17 +39,36 @@ public class MovieProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)){
-            case (MOVIE_POPULAR|MOVIE_TOP_RATED|MOVIE_ID):
+            case (MOVIE_POPULAR):
             {
                 retCursor = movieHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,projection,
-                        selection,selectionArgs,null,null,sortOrder);
+                        selection,selectionArgs,null,null, MovieContract.MovieEntry.COLUMN_POPULARITY +" DESC");
+                break;
+            }
+            case (MOVIE_TOP_RATED):
+            {
+                retCursor = movieHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,projection,
+                        selection,selectionArgs,null,null, MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE +" DESC");
+                break;
+            }
+            case (MOVIE_ID):
+            {
+                String movieID = uri.getLastPathSegment();
+                retCursor = movieHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,projection,
+                        MovieContract.MovieEntry._ID+"="+movieID ,selectionArgs,null,null, MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE +" DESC");
                 break;
             }
             case MOVIE_ID_TRAILERS:
             {
+                List<String> paths =uri.getPathSegments();
+                String movieID = paths.get(1);
                 retCursor = movieHelper.getReadableDatabase().query(MovieContract.TrailerEntry.TABLE_NAME,projection,
-                        selection,selectionArgs,null,null,sortOrder);
+                        MovieContract.MovieEntry._ID+"="+movieID,selectionArgs,null,null,sortOrder);
+                break;
             }
+            default:
+                throw new UnsupportedOperationException("Unknown uri :"+uri.toString());
+
         }
         return null;
     }
