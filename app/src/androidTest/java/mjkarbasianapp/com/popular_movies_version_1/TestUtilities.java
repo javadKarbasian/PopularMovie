@@ -16,14 +16,15 @@ public class TestUtilities extends AndroidTestCase {
 
     public static ContentValues createMovieValues() {
         ContentValues movieValues = new ContentValues();
-        movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE,"Test movie title");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_BACK_DROP_PATH,"Test movie backDropPath");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW,"Test movie overview");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_POPULARITY,"Test movie popularity");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH,"Test movie poster path");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE,"Test movie release date");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_SITE_ID,"Test movie site id");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,"Test movie vote average");
+        movieValues.put(MovieContract.MovieEntry._ID,1);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE,"Test Movie title");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_BACK_DROP_PATH,"Test Movie backDropPath");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW,"Test Movie overview");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_POPULARITY,"TestMovie popularity");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH,"Test Movie poster path");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE,"Test Movie release date");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_SITE_ID,"Test movie Site id");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,"Test Movie vote average");
         return movieValues;
     }
 
@@ -48,5 +49,11 @@ public class TestUtilities extends AndroidTestCase {
         trailerValues.put(MovieContract.TrailerEntry.COLUMN_SITE,"Test trailer site");
 
         return trailerValues;
+    }
+
+    public static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+        assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
+        validateCurrentRecord(error, valueCursor, expectedValues);
+        valueCursor.close();
     }
 }
