@@ -29,6 +29,7 @@ public class MovieProvider extends ContentProvider {
     static final int MOVIE_TOP_RATED = 101;
     static final int MOVIE_ID_TRAILERS = 200 ;
     static final int MOVIE_ID = 102 ;
+    static final int TRAILER = 300;
 
     @Override
     public boolean onCreate() {
@@ -59,7 +60,7 @@ public class MovieProvider extends ContentProvider {
             {
                 String movieID = uri.getLastPathSegment();
                 retCursor = movieHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,projection,
-                        MovieContract.MovieEntry._ID+"="+movieID ,selectionArgs,null,null, MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE +" DESC");
+                        MovieContract.MovieEntry._ID+"="+movieID ,selectionArgs,null,null, null);
                 break;
             }
             case MOVIE_ID_TRAILERS:
@@ -68,6 +69,12 @@ public class MovieProvider extends ContentProvider {
                 String movieID = paths.get(1);
                 retCursor = movieHelper.getReadableDatabase().query(MovieContract.TrailerEntry.TABLE_NAME,projection,
                         MovieContract.MovieEntry._ID+"="+movieID,selectionArgs,null,null,sortOrder);
+                break;
+            }
+            case TRAILER:
+            {
+                retCursor = movieHelper.getReadableDatabase().query(MovieContract.TrailerEntry.TABLE_NAME,projection,
+                        null ,selectionArgs,null,null, null);
                 break;
             }
             default:
@@ -91,6 +98,8 @@ public class MovieProvider extends ContentProvider {
                 return MovieContract.MovieEntry.CONTENT_TYPE;
             case MOVIE_ID_TRAILERS:
                 return MovieContract.TrailerEntry.CONTENT_TYPE;
+            case TRAILER:
+                return MovieContract.TrailerEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :"+uri.toString());
 
@@ -104,7 +113,17 @@ public class MovieProvider extends ContentProvider {
         Uri returnUri;
         switch (sUriMatcher.match(uri))
         {
-            case (MOVIE_POPULAR|MOVIE_TOP_RATED):
+            case (MOVIE_POPULAR):
+            {
+                long _id =  db.insert(MovieContract.MovieEntry.TABLE_NAME,null,values);
+                if(_id>0){
+                    returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
+                }else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            }
+            case (MOVIE_TOP_RATED):
             {
                 long _id =  db.insert(MovieContract.MovieEntry.TABLE_NAME,null,values);
                 if(_id>0){
@@ -118,7 +137,7 @@ public class MovieProvider extends ContentProvider {
             {
                 long _id =  db.insert(MovieContract.TrailerEntry.TABLE_NAME,null,values);
                 if(_id>0){
-                    returnUri = MovieContract.MovieEntry.buildMovieTrailerUri(_id);
+                    returnUri = MovieContract.TrailerEntry.buildTrailerUri(_id);
                 }else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -127,6 +146,7 @@ public class MovieProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("unknown uri: "+ uri);
         }
+            getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
@@ -137,13 +157,21 @@ public class MovieProvider extends ContentProvider {
         if(null==selection)selection="1";
         switch (sUriMatcher.match(uri))
         {
-            case(MOVIE_POPULAR|MOVIE_TOP_RATED):
+            case(MOVIE_POPULAR):
             {
                 rowsDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,
                         selection, selectionArgs);
                 break;
             }
             case (MOVIE_ID_TRAILERS):
+            {
+                List<String> paths = uri.getPathSegments();
+                String movieId = paths.get(1);
+                rowsDeleted = db.delete(MovieContract.TrailerEntry.TABLE_NAME,
+                        MovieContract.TrailerEntry.COLUMN_MOV_ID+"="+movieId , selectionArgs);
+                break;
+            }
+            case (TRAILER):
             {
                 rowsDeleted = db.delete(MovieContract.TrailerEntry.TABLE_NAME,
                         selection, selectionArgs);
@@ -165,7 +193,13 @@ public class MovieProvider extends ContentProvider {
         int rowsUpdated;
         switch (sUriMatcher.match(uri))
         {
-            case(MOVIE_POPULAR|MOVIE_TOP_RATED):
+            case(MOVIE_POPULAR):
+            {
+                rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values,
+                        selection, selectionArgs);
+                break;
+            }
+            case(MOVIE_TOP_RATED):
             {
                 rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values,
                         selection, selectionArgs);
@@ -182,6 +216,7 @@ public class MovieProvider extends ContentProvider {
         }
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
+            Log.d(LOG_TAG," notifyChange was called !");
         }
         return rowsUpdated;
     }
@@ -192,7 +227,20 @@ public class MovieProvider extends ContentProvider {
         int returnCount = 0;
         switch (sUriMatcher.match(uri))
         {
-            case(MOVIE_POPULAR|MOVIE_TOP_RATED):{
+            case(MOVIE_POPULAR):{
+                db.beginTransaction();
+                try{
+                    for (ContentValues value:values){
+                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,value);
+                        if(_id!=-1) returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                }finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri,null);
+            }
+            case(MOVIE_TOP_RATED):{
                 db.beginTransaction();
                 try{
                     for (ContentValues value:values){
@@ -231,11 +279,12 @@ public class MovieProvider extends ContentProvider {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
+
         uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/popular" ,MOVIE_POPULAR);
         uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/top_rated",MOVIE_TOP_RATED);
         uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/#",MOVIE_ID);
         uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/#"+"/trailer",MOVIE_ID_TRAILERS);
-
+        uriMatcher.addURI(authority, MovieContract.PATH_TRAILER,TRAILER);
         return uriMatcher;
     }
 
