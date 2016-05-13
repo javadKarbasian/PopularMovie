@@ -2,9 +2,12 @@ package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,8 +25,9 @@ import java.util.ArrayList;
 /**
  * Created by family on 3/5/2016.
  */
-public  class MovieFragment extends Fragment {
+public  class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    final static int MOVIE_LOADER = 0;
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     static  ImageAdapter imageAdapter = null;
 
@@ -98,6 +102,20 @@ public  class MovieFragment extends Fragment {
     }
 
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
     }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        imageAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    imageAdapter.swapCursor(null);
+    }
+}
 
 
