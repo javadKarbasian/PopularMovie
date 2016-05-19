@@ -27,7 +27,6 @@ import java.util.ArrayList;
  */
 public  class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    final static int MOVIE_LOADER = 0;
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     static  ImageAdapter imageAdapter = null;
 
@@ -109,12 +108,12 @@ public  class MovieFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        imageAdapter.swapCursor(data);
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-    imageAdapter.swapCursor(null);
+
     }
 }
 
