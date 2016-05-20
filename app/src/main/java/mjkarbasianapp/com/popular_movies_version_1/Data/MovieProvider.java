@@ -5,6 +5,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -229,9 +230,12 @@ public class MovieProvider extends ContentProvider {
         {
             case(MOVIE_POPULAR):{
                 db.beginTransaction();
+                long _id = -1;
                 try{
                     for (ContentValues value:values){
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,value);
+                        long isUnique = DatabaseUtils.queryNumEntries(db, MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry.COLUMN_SITE_ID + " = " + "'" + value.getAsString(MovieContract.MovieEntry.COLUMN_SITE_ID) + "'");
+                        Log.d(LOG_TAG,"isUnique is" + Long.toString(isUnique));
+                        if(isUnique==0) _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,value);
                         if(_id!=-1) returnCount++;
                     }
                     db.setTransactionSuccessful();
@@ -239,12 +243,15 @@ public class MovieProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri,null);
+                break;
             }
             case(MOVIE_TOP_RATED):{
                 db.beginTransaction();
+                long _id = 0;
                 try{
                     for (ContentValues value:values){
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,value);
+                        long isUnique = DatabaseUtils.queryNumEntries(db, MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry.COLUMN_SITE_ID + " = " + "'" + value.getAsString(MovieContract.MovieEntry.COLUMN_SITE_ID) + "'");
+                        if(isUnique==0) _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,value);
                         if(_id!=-1) returnCount++;
                     }
                     db.setTransactionSuccessful();
@@ -252,6 +259,7 @@ public class MovieProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri,null);
+                break;
             }
             case (MOVIE_ID_TRAILERS):
             {

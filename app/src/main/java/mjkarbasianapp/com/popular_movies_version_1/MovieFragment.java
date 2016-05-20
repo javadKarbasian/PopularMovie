@@ -1,13 +1,17 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,18 +21,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import mjkarbasianapp.com.popular_movies_version_1.Data.MovieContract;
 
 /**
  * Created by family on 3/5/2016.
  */
 public  class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+
+    final static int MOVIE_LOADER = 0;
     private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
     static  ImageAdapter imageAdapter = null;
+    private static final String[] Movie_COLUMNS = {MovieContract.MovieEntry._ID,MovieContract.MovieEntry.COLUMN_TITLE, MovieContract.MovieEntry.COLUMN_POSTER_PATH};
 
     public MovieFragment() {
     }
@@ -64,56 +69,86 @@ public  class MovieFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        imageAdapter = new ImageAdapter(getActivity(), new ArrayList<JSONObject>());
+        Log.d(LOG_TAG, "onCreateView");
+        imageAdapter = new ImageAdapter(getActivity(), null , 0);
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final GridView gridView = (GridView) rootView.findViewById(R.id.gridview_main);
         gridView.setAdapter(imageAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public String[] movieData;
-
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                JSONObject movie = imageAdapter.getItem(position);
-                try {
-                    movieData = Utility.getMovieDataFromJson(movie);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+
+                if (cursor != null) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class).
+                            setData(MovieContract.MovieEntry.buildMovieUri(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry._ID))));
+                    startActivity(intent);
                 }
-                intent.putExtra("movieData",movieData);
-                startActivity(intent);
-            }
-        });
+
+        }
+    });
         return rootView;
     }
     @Override
     public void onStart() {
+        Log.d(LOG_TAG, "onStart");
         super.onStart();
         updateMovie();
+
     }
 
     private void updateMovie() {
+        Log.d(LOG_TAG, "onUpdateMovie");
         FetchMovieTask movieTask = new FetchMovieTask(getActivity());
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = prefs.getString(getString(R.string.pref_sort_key),"popular");
-        movieTask.execute(sortOrder,"popular");
+        String sortOrder = Utility.getSortSetting(getActivity());
+        movieTask.execute(sortOrder, "popular");
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onActivityCreated");
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        Log.d(LOG_TAG, "onCreateLoader");
+        String sortSetting = Utility.getSortSetting(getActivity());
+        Uri movieUri = MovieContract.MovieEntry.buildPopularMovieUri();
+        switch (sortSetting)
+        {
+            case("popular"):
+            {
+                movieUri = MovieContract.MovieEntry.buildPopularMovieUri();
+                break;
+            }
+            case ("top_rated"):
+            {
+                movieUri = MovieContract.MovieEntry.buildTopMovieUri();
+                break;
+            }
+            default:
+                new UnsupportedOperationException("Setting Not Match..!");
+        }
+        return new CursorLoader(getActivity(),movieUri,Movie_COLUMNS,null,null,null);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.d(LOG_TAG, "onLoadFinished");
+        imageAdapter.swapCursor(cursor);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        Log.d(LOG_TAG, "onLoadReset");
+        imageAdapter.swapCursor(null);
     }
 }
 

@@ -2,9 +2,13 @@ package mjkarbasianapp.com.popular_movies_version_1;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -35,6 +39,9 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.util.ArrayList;
+
+import mjkarbasianapp.com.popular_movies_version_1.Data.MovieContract;
+import mjkarbasianapp.com.popular_movies_version_1.Data.MovieContract.MovieEntry;
 
 
 public class DetailActivity extends ActionBarActivity {
@@ -77,12 +84,25 @@ public class DetailActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+    public static class DetailFragment extends Fragment implements LoaderCallbacks<Cursor> {
+
+        final static int DETAIL_LOADER = 1;
         private static final String BASE_PIC_URI = "http://image.tmdb.org/t/p/w185/";
         MediaController  mMediaController;
         private static String LOG_TAG = DetailFragment.class.getSimpleName();
         private final static  String MOVIE_SHARE_HASHTAG =" #MovieApp";
-        private String[] movieData;
+        private String mTitle;
+        private int mPopularity;
+
+        private final String[] MOVIE_COLUMNS = {
+                MovieEntry._ID,
+                MovieEntry.COLUMN_TITLE,
+                MovieEntry.COLUMN_OVERVIEW,
+                MovieEntry.COLUMN_RELEASE_DATE,
+                MovieEntry.COLUMN_POSTER_PATH,
+                MovieEntry.COLUMN_VOTE_AVERAGE,
+                MovieEntry.COLUMN_POPULARITY
+        };
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -92,33 +112,7 @@ public class DetailActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-            ImageAdapter imageAdapter = new ImageAdapter(getActivity(),new ArrayList<JSONObject>());
-            Intent intent = getActivity().getIntent();
-            ImageView imageView = (ImageView)rootView.findViewById(R.id.movie_detail_image);
-            TextView nameView = (TextView)rootView.findViewById(R.id.movie_name);
-            TextView yearView = (TextView)rootView.findViewById(R.id.movie_year);
-            TextView durationView = (TextView)rootView.findViewById(R.id.movie_duration);
-            TextView rateView = (TextView)rootView.findViewById(R.id.movie_ratings);
-            RatingBar ratingBar =(RatingBar) rootView.findViewById(R.id.ratingBar);
-            TextView overviewView = (TextView)rootView.findViewById(R.id.movie_description);
-            if (intent!=null && intent.hasExtra("movieData")){
-               movieData = intent.getStringArrayExtra("movieData");
-                if(movieData!=null){
-                    nameView.setText(movieData[0]);
-                    yearView.setText(movieData[5]);
-                    durationView.setText(movieData[6]);
-                    rateView.setText(movieData[4]);
-                    overviewView.setText(movieData[1]);
-                    ratingBar.setRating((Float.parseFloat(movieData[4]))/2);
-                    String posterPath = movieData[2];
-                    String url = BASE_PIC_URI + posterPath;
-                    Picasso.with(getActivity()).load(url).into(imageView);
-                    return rootView;  }
-                return null;
-
-            }
-            return null;
+            return inflater.inflate(R.layout.fragment_detail, container, false);
 
         }
 
@@ -148,10 +142,61 @@ public class DetailActivity extends ActionBarActivity {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                    "Lets see " +'"' +movieData[0]+'"'+"\n" + "with popular Rating of " + movieData[4] + MOVIE_SHARE_HASHTAG);
+                    "Lets see " +'"' +mTitle+'"'+"\n" + "with popular Rating of " + Integer.toString(mPopularity) + MOVIE_SHARE_HASHTAG);
             return shareIntent;
         }
 
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+            super.onActivityCreated(savedInstanceState);
+        }
 
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Log.v(LOG_TAG, "In onCreateLoader");
+            Intent intent = getActivity().getIntent();
+            if (intent == null) {
+                return null;
+            }
+
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    intent.getData(),
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            Log.v(LOG_TAG, "In onLoadFinished");
+            if (!data.moveToFirst()) { return; }
+            ImageView imageView = (ImageView)getView().findViewById(R.id.movie_detail_image);
+            TextView nameView = (TextView)getView().findViewById(R.id.movie_name);
+            TextView yearView = (TextView)getView().findViewById(R.id.movie_year);
+            TextView rateView = (TextView)getView().findViewById(R.id.movie_ratings);
+            RatingBar ratingBar =(RatingBar) getView().findViewById(R.id.ratingBar);
+            TextView overviewView = (TextView)getView().findViewById(R.id.movie_description);
+            mTitle = data.getString(data.getColumnIndex(MovieEntry.COLUMN_TITLE));
+            mPopularity = data.getColumnIndex(MovieEntry.COLUMN_POPULARITY);
+            nameView.setText(mTitle) ;
+            yearView.setText(data.getString(data.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE)));
+            rateView.setText(data.getString(data.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE)));
+            ratingBar.setRating(Float.parseFloat(data.getString(data.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE))) / 2);
+            overviewView.setText(data.getString(data.getColumnIndex(MovieEntry.COLUMN_OVERVIEW)));
+            String url = BASE_PIC_URI + data.getString(data.getColumnIndex(MovieEntry.COLUMN_POSTER_PATH));
+            Picasso.with(getActivity()).load(url).into(imageView);
+
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+        }
     }
 }

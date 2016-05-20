@@ -39,7 +39,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         //if there is no sort mode we could not show anythings
         if (params.length == 0) {
-          Log.d(LOG_TAG,"The params is null! please Check!");
+          Log.v(LOG_TAG,"The params is null! please Check!");
         }
 
         // These two need to be declared outside the try/catch
@@ -67,7 +67,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                     .appendQueryParameter(LANG_PARAM, "en")
                     .appendQueryParameter(APPID_PARAM, "c4cba1cb560e5692f0a51575d4f1a145")
                     .build();
-            Log.d(LOG_TAG, builtUri.toString());
+            Log.v(LOG_TAG, builtUri.toString());
             URL url = new URL(builtUri.toString());
 
             // Create the request to OpenWeatherMap, and open the connection
@@ -97,8 +97,6 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                 return null;
             }
             movieJsonStr = buffer.toString();
-            Log.d(LOG_TAG,movieJsonStr);
-
         } catch (IOException e) {
             Log.e(LOG_TAG, "Connection Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
@@ -139,9 +137,10 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
             JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
             Vector<ContentValues> cVVector = new Vector<ContentValues>(movieArray.length());
 
-            ContentValues contentValues = new ContentValues();
+
             JSONObject movie;
             for (int i=0;i<movieArray.length();i++){
+                ContentValues contentValues = new ContentValues();
                 movie = movieArray.getJSONObject(i);
                 contentValues.put(MovieEntry.COLUMN_TITLE,Utility.getMovieDataFromJson(movie)[0]);
                 contentValues.put(MovieEntry.COLUMN_OVERVIEW,Utility.getMovieDataFromJson(movie)[1]);
@@ -160,7 +159,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Void> {
                 cVVector.toArray(cvArray);
                 inserted = mContext.getContentResolver().bulkInsert(MovieEntry.buildPopularMovieUri(), cvArray);
             }
-            Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
+            Log.v(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
 
         }
         catch (JSONException e){

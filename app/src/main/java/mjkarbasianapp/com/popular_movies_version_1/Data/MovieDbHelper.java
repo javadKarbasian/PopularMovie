@@ -29,7 +29,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_POPULARITY + " TEXT NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_SITE_ID + " TEXT UNIQUE NOT NULL " +
+                MovieContract.MovieEntry.COLUMN_SITE_ID + " TEXT NOT NULL " +
                 " );";
         //Creating Trailer database
         final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE "+ MovieContract.TrailerEntry.TABLE_NAME +"("+

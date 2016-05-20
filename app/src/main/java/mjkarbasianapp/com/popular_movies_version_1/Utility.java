@@ -1,6 +1,9 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,5 +53,11 @@ public  class Utility {
             movieData  = new String[]{title, overview, posterPath, backDropPath, voteAverage, releaseDate, popularity, id};
 
         return movieData ;
+    }
+
+    public static String getSortSetting(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String sortOrder = prefs.getString(context.getString(R.string.pref_sort_key),"popular");
+        return sortOrder;
     }
 }

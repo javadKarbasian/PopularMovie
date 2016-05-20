@@ -108,7 +108,7 @@ public class TestProvider extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        deleteAllRecords();
+       deleteAllRecords();
     }
 
     private void deleteAllRecords() {
@@ -162,7 +162,6 @@ public class TestProvider extends AndroidTestCase {
         long rowId  = ContentUris.parseId(movieUri);
         // Verify we got a row back.
         assertTrue(rowId != -1);
-        Log.d(LOG_TAG, "New row id: " + rowId);
 
         ContentValues updateValues = new ContentValues(values);
         updateValues.put(MovieEntry._ID,rowId);
@@ -175,7 +174,6 @@ public class TestProvider extends AndroidTestCase {
                 null, null, null, null);
         cursor.moveToFirst();
         String voteValue = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE));
-        Log.d(LOG_TAG,"vote value is: "+ voteValue);
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, tco);
         cursor.registerContentObserver(tco);
@@ -194,7 +192,6 @@ public class TestProvider extends AndroidTestCase {
                 MovieEntry.buildMovieUri(rowId),null,null,null,null);
         cursor.moveToFirst();
         voteValue = cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE));
-        Log.d(LOG_TAG,"vote value is: "+ voteValue);
         TestUtilities.validateCursor("testUpdate.  Error validating movie entry update.",cursor,updateValues);
         cursor.close();
 
