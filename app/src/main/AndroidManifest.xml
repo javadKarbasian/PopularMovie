@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mjkarbasianapp.com.popular_movies_version_1">
 
+    <!-- Permissions required by the sync adapter -->
+    <uses-permission
+        android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission
+        android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -41,6 +48,34 @@
             android:exported="true"
             android:permission="com.myApp.LICENSE_TO_KILL"
             ></provider>
+        <!-- SyncAdapter's dummy authentication service -->
+        <service
+            android:name=".service.MovieAuthenticatorService"
+            >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name=".service.MovieSyncService"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
+
     </application>
+    <permission android:name="com.myApp.LICENSE_TO_KILL"
+        android:protectionLevel="dangerous"
+        android:label="Licensed to Kill"/>
 
 </manifest>

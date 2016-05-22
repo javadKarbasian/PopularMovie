@@ -1,5 +1,8 @@
 package mjkarbasianapp.com.popular_movies_version_1;
 
+import android.app.AlarmManager;
+import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +26,7 @@ import android.widget.GridView;
 
 
 import mjkarbasianapp.com.popular_movies_version_1.Data.MovieContract;
+import mjkarbasianapp.com.popular_movies_version_1.service.MovieSyncAdapter;
 
 /**
  * Created by family on 3/5/2016.
@@ -31,7 +35,7 @@ public  class MovieFragment extends Fragment implements LoaderManager.LoaderCall
 
 
     final static int MOVIE_LOADER = 0;
-    private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+    private final String LOG_TAG = MovieFragment.class.getSimpleName();
     static  ImageAdapter imageAdapter = null;
     private static final String[] Movie_COLUMNS = {MovieContract.MovieEntry._ID,MovieContract.MovieEntry.COLUMN_TITLE, MovieContract.MovieEntry.COLUMN_POSTER_PATH};
 
@@ -100,11 +104,9 @@ public  class MovieFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void updateMovie() {
-        Log.d(LOG_TAG, "onUpdateMovie");
-        FetchMovieTask movieTask = new FetchMovieTask(getActivity());
-        String sortOrder = Utility.getSortSetting(getActivity());
-        movieTask.execute(sortOrder, "popular");
-        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+
+          MovieSyncAdapter.syncImmediately(getActivity());
+          getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
 
     }
 
